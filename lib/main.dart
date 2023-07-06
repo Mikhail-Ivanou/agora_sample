@@ -8,6 +8,8 @@ void main() {
 
 const appId = "b92fd4177c6e4e2eb2660f7830a6fe5b";
 const token = "4429b0cb04b84f88810f39df5d25f9a4";
+const rtcToken =
+    "007eJxTYCg3kVcQO+ztlm+wZ4e3Pkve/emC9i7Va9rj+vymSDimzlZgSLI0SksxMTQ3TzZLNUk1Sk0yMjMzSDO3MDZINEtLNU0K3bUspSGQkWGKdwwLIwMEgvgsDCGuwSEMDAAthRuw";
 const channel = "TEST";
 
 class MyApp extends StatelessWidget {
@@ -61,7 +63,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   int? _remoteUid;
   bool _localUserJoined = false;
   late RtcEngine _engine;
@@ -97,14 +98,16 @@ class _MyHomePageState extends State<MyHomePage> {
             _remoteUid = remoteUid;
           });
         },
-        onUserOffline: (RtcConnection connection, int remoteUid, UserOfflineReasonType reason) {
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
           debugPrint("remote user $remoteUid left channel");
           setState(() {
             _remoteUid = null;
           });
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
-          debugPrint('[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
+          debugPrint(
+              '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
       ),
     );
@@ -115,7 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     try {
       await _engine.joinChannel(
-        token: token,
+        token: rtcToken,
         channelId: channel,
         uid: 0,
         options: const ChannelMediaOptions(),
@@ -145,11 +148,11 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Center(
                 child: _localUserJoined
                     ? AgoraVideoView(
-                  controller: VideoViewController(
-                    rtcEngine: _engine,
-                    canvas: const VideoCanvas(uid: 0),
-                  ),
-                )
+                        controller: VideoViewController(
+                          rtcEngine: _engine,
+                          canvas: const VideoCanvas(uid: 0),
+                        ),
+                      )
                     : const CircularProgressIndicator(),
               ),
             ),
